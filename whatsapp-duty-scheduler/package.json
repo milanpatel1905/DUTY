@@ -1,0 +1,78 @@
+{
+  "name": "whatsapp-duty-scheduler",
+  "version": "1.0.0",
+  "private": true,
+  "main": "electron/main.js",
+  "author": "Milan Patel",
+  "description": "WhatsApp Duty Scheduler – Auto-extract duties from WhatsApp chats & PDFs",
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "worker": "node scripts/watcher.js",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron .\"",
+    "dist:win": "npm run build && electron-builder --win nsis",
+    "dist": "npm run build && electron-builder"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "prisma": "^5.15.0",
+    "@prisma/client": "^5.15.0",
+    "pdf-parse": "^1.1.1",
+    "date-fns": "^3.6.0",
+    "multer": "^1.4.5-lts.1",
+    "adm-zip": "^0.5.10",
+    "chokidar": "^3.5.3",
+    "react-big-calendar": "^1.13.0",
+    "moment": "^2.30.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.3",
+    "@types/pdf-parse": "^1.1.4",
+    "@types/multer": "^1.4.11",
+    "@types/react-big-calendar": "^1.8.9",
+    "typescript": "^5.4.5",
+    "tailwindcss": "^3.4.3",
+    "postcss": "^8.4.38",
+    "autoprefixer": "^10.4.19",
+    "electron": "^31.1.0",
+    "electron-builder": "^24.13.3",
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.milanpatel.dutyscheduler",
+    "productName": "WhatsApp Duty Scheduler",
+    "files": [
+      "electron/**/*",
+      ".next/**/*",
+      "node_modules/**/*",
+      "prisma/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "prisma",
+        "to": "app/prisma"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "electron/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Duty Scheduler"
+    }
+  }
+}

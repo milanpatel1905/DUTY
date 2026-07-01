@@ -1,0 +1,44 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Duty {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  dutyDate    DateTime
+  source      String   // 'whatsapp_text' | 'pdf' | 'manual'
+  assignee    String?  // matched alias
+  chatName    String?
+  sender      String?
+  confidence  Float    @default(0.8)
+  createdAt   DateTime @default(now())
+  sourceHash  String   @unique // dedupe
+  fileUrl     String?
+  rawText     String?
+  completed   Boolean  @default(false)
+}
+
+model SourceMessage {
+  id        String   @id @default(cuid())
+  chatName  String?
+  sender    String?
+  timestamp DateTime?
+  body      String
+  hash      String   @unique
+  createdAt DateTime @default(now())
+}
+
+model IngestedFile {
+  id        String   @id @default(cuid())
+  filename  String
+  hash      String   @unique
+  fileType  String
+  createdAt DateTime @default(now())
+}
